@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-image: url(bgi.jpg);
+            /* background-position: center; */
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        
+        .playground {
+            width: 100%;
+            height: 1000px;
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        @keyframes hit {
+            0% {
+                transform: translateX(0px);
+            }
+            100% {
+                transform: translateX(200px);
+            }
+        }
+        
+        .player {
+            position: relative;
+            text-align: center;
+            margin: auto;
+            cursor: pointer;
+            font-size: 30px;
+            width: 250px;
+            height: 400px;
+            /* border: 1px solid black; */
+            background-image: url(./putong.png);
+            background-size: 100% 100%;
+        }
+        
+        .hp {
+            position: absolute;
+            left: 25%;
+            top: -100px;
+            color: red;
+        }
+        
+        .gold {
+            color: gold;
+        }
+        
+        .vip {
+            background-image: url(./kejin.webp);
+            background-size: 100% 100%;
+        }
+        
+        .move {
+            position: absolute;
+            right: -70px;
+        }
+        
+        .move button {
+            display: block;
+            cursor: pointer;
+            width: 80px;
+            height: 20px;
+            font-size: 12px;
+        }
+        
+        .disappear {
+            transition: 1s ease;
+            opacity: 0;
+        }
+        
+        .attacks {
+            animation: hit 0.1s ease;
+        }
+        
+        .normal {
+            position: absolute;
+            top: -60px;
+            left: 110px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="playground">
+
+        <audio id="audio" src="./samurai.mp3"></audio>
+        <audio src="./fist-punch-or-kick-7171.mp3" id="punch"></audio>
+        <audio src="./game-over-arcade-6435.mp3" id="gg"></audio>
+        <audio src="./teleport-14639.mp3" id="run"></audio>
+
+        <div class="player vip">
+            <div class="hp">100</div>
+            <div class="name gold">
+                氪金玩家
+            </div>
+            <div class="move" style="display:none">
+                <button class="attack">剑斩</button>
+            </div>
+        </div>
+        <button class="btn">重新开始</button>
+
+        <div class="player">
+            <div>
+
+                <div class="name normal">
+
+
+                </div>
+                <div class="hp">80</div>
+            </div>
+            <div class="move">
+                <button class="attack">刮痧一击！</button>
+                <button class="run">逃跑</button>
+            </div>
+
+        </div>
+        <script>
+            let players = document.querySelectorAll(".player")
+            let attacks = document.querySelectorAll(".attack")
+            let hp = document.querySelectorAll(".player .hp")
+            let run = document.querySelector(".run")
+            let move = document.querySelectorAll(".move")
+            let names = prompt("请输入大侠的名称")
+            let name = document.querySelector(".normal")
+            name.innerHTML = names
+            let btn = document.querySelector(".btn")
+            btn.onclick = function() {
+
+                attacks[1].disabled = false;
+                run.disabled = false
+                for (let i = 0; i < 2; i++) {
+                    players[i].classList.remove("disappear");
+
+                }
+                if (hp[1].innerHTML < 0) {
+                    players[1].style.transform = "rotate(360deg)"
+                } else {
+                    players[0].style.transform = "rotate(360deg)"
+                }
+                hp[0].innerHTML = 100
+                hp[1].innerHTML = 80
+
+
+
+            }
+
+            function enemyHit() {
+                onclick = playSword()
+
+                hp[1].innerHTML = parseFloat(hp[1].innerHTML) - 70
+                if (hp[1].innerHTML < 0) {
+                    players[1].style.transform = "rotate(90deg)"
+                    attacks[0].disabled = true
+
+                    setTimeout(playGG, 1000)
+                    setTimeout(players[1].classList.add("disappear"), 3000)
+                    setTimeout(lostText, 2000)
+                }
+            }
+
+            function playSword() {
+                document.getElementById("audio").play();
+
+            }
+
+            function playPunch() {
+                document.getElementById("punch").play();
+
+            }
+
+            function playGG() {
+
+                document.getElementById("gg").play();
+            }
+
+            function playRun() {
+                document.getElementById("run").play();
+            }
+
+            function runText() {
+                alert("逃避虽然有用，但可耻！请想办法战胜他！")
+            }
+
+            function lostText() {
+                alert("大侠不要放弃，请想办法赢得这场胜利！")
+            }
+
+            function winText() {
+                alert("GG!别和群友是怎么做的哦~")
+            }
+
+            function hideMove() {
+                move[1].style.display = "block"
+            }
+            for (let i = 0; i < 2; i++) {
+                run.onclick = function() {
+                    players[1].classList.add("disappear")
+                    playRun()
+                    setTimeout(runText, 1000)
+                }
+                attacks[1].onclick = function() {
+
+                    move[1].style.display = "none"
+                    setTimeout(hideMove, 1000)
+                    onclick = playPunch()
+                    hp[0].innerHTML = parseFloat(hp[0].innerHTML) - 40
+                    setTimeout(enemyHit, 500)
+                    players[i].classList.add("attacks")
+
+                    function remove() {
+                        players[i].classList.remove("attacks")
+                    }
+                    setTimeout(remove, 1000)
+                    if (hp[1].innerHTML < 0) {
+                        players[1].style.transform = "rotate(90deg)"
+                        attacks[0].disabled = true
+
+                        setTimeout(playGG, 1000)
+                        setTimeout(players[1].classList.add("disappear"), 3000)
+                        setTimeout(lostText, 2000)
+                    } else if (hp[0].innerHTML <= 0) {
+                        players[0].style.transform = "rotate(90deg)"
+                        attacks[1].disabled = true
+                        run.disabled = true
+                        setTimeout(playGG, 1000)
+                        setTimeout(players[0].classList.add("disappear"), 3000)
+                        setTimeout(winText, 2000)
+                    }
+
+                }
+            }
+        </script>
+</body>
+
+</html>
