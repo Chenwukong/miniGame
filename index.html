@@ -155,9 +155,15 @@
 
             }
 
+
             function enemyHit() {
                 onclick = playSword()
+                players[0].classList.add("attacks")
 
+                function remove() {
+                    players[0].classList.remove("attacks")
+                }
+                setTimeout(remove, 1000)
                 hp[1].innerHTML = parseFloat(hp[1].innerHTML) - 70
                 if (hp[1].innerHTML < 0) {
                     players[1].style.transform = "rotate(90deg)"
